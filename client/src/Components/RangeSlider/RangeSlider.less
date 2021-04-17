@@ -1,0 +1,64 @@
+// out: false
+@import "../../../public/less/variables";
+@import "../../../public/less/mixins";
+
+.range-block {
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.range-container {
+    .unselectable;
+    width: 100%;
+    min-width: 120px;
+    height: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & .track {
+        position: relative;
+        width: 100%;
+        height: 8px;
+        .pointer;
+        .neumorphism-background;
+        .neumorphism-shadow-inset(2px, 3px, 20%);
+        .neumorphism-border;
+
+        &.none-thumb{
+            overflow: hidden;
+        }
+    }
+
+    & .progress {
+        position: absolute;
+        width: 100%;
+        height: 8px;
+        .pointer;
+        .neumorphism-background(@convex: "true"; @background: @accent-color; @radius: 4px 0 0 4px);
+    }
+
+    & .thumb {
+        position: absolute;
+        height: 16px;
+        width: 16px;
+        .pointer;
+        .neumorphism-background(@convex: "true");
+        .neumorphism-shadow-outset(2px, 2px, @delta: 2px);
+        border: 1px solid @border-color;
+        margin-top: -5px;
+
+        & div {
+            height: 8px;
+            width: 8px;
+            .pointer;
+            @lighten: lighten(@accent-color, 5%);
+            .neumorphism-background(@background: @lighten);
+            .neumorphism-shadow-inset(1px, 2px, 15%, @color: @lighten);
+            margin: 4px;
+        }
+    }
+}

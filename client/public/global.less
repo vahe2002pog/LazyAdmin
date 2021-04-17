@@ -1,0 +1,95 @@
+@import "less/variables";
+@import "less/mixins";
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap');
+
+*{
+    font-family: @font-name;
+    color: @font-color;
+    font-weight: 600;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    background-color: @background-color;
+}
+
+.selectGroup {
+    width: min-content;
+    min-width: 250px;
+    margin: 10px;
+}
+
+hr {
+    border: none;
+    margin: 0;
+    .neumorphism-background;
+    .neumorphism-shadow-inset(1px, 2px);
+    &.none-rounded{
+        .neumorphism-background(@radius: 0px);
+    }
+}
+
+a {
+    text-decoration: none;
+    transition: 0.2s;
+    color: @font-color;
+
+    &:active {
+        transform: scale(0.95);
+    }
+
+    &:hover {
+        opacity: 0.5;
+    }
+}
+
+* ::-webkit-scrollbar {
+    width: 10px;
+    &-track {
+        background: transparent;
+    }
+    &-thumb {
+        border: 2px solid rgba(0, 0, 0, 0);
+        background-clip: padding-box;
+        .neumorphism-background(@background: transparent, @radius: 10px);
+        .neumorphism-shadow-inset(3px, 6px, 5%,  @color: @accent-color);
+    }
+    &-track-piece{
+        &:end {
+            background: transparent;
+            margin-bottom: 10px;
+        }
+
+        &:start {
+            background: transparent;
+            margin-top: 10px;
+        }
+    }
+}
+
+input[type=text], input[type=number], textarea {
+    margin: 5px 10px;
+    .neumorphism-background;
+    .neumorphism-shadow-inset(3px, 5px);
+    .neumorphism-border;
+    padding: 8px;
+    padding-left: 15px;
+    &::placeholder {
+        color: rgba(@font-color, 0.5);
+        .unselectable;
+    }
+}
+
+textarea {
+    resize: none;
+    white-space: normal!important;
+    cursor: auto;
+}
+
+input:focus, textarea:focus, button:focus, select:focus {
+    outline: none;
+}

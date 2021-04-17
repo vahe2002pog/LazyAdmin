@@ -1,0 +1,76 @@
+// out: false
+
+@import "../../../public/less/variables";
+@import "../../../public/less/mixins";
+
+[class*="button-"] {
+    .neumorphism-background(5%, 5%, @convex:"true");
+    .pointer;
+    .unselectable;
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+
+    &.x-large {
+        .neumorphism-shadow-inner(3px, 3px);
+        .neumorphism-shadow-outset(3px, 4px, 14%);
+        padding: 0 10px;
+        border-radius: 14px;
+        height: 52px;
+        font-size: x-large;
+    }
+
+    &.large {
+        .neumorphism-shadow-inner(2px, 3px);
+        .neumorphism-shadow-outset(3px, 3px, 12%);
+        padding: 0 8px;
+        border-radius: 12px;
+        height: 44px;
+        font-size: large;
+    }
+
+    &.normal {
+        .neumorphism-shadow-inner(2px, 2px);
+        .neumorphism-shadow-outset(2px, 3px, 10%);
+        padding: 0 6px;
+        border-radius: 10px;
+        height: 36px;
+    }
+
+    &.small {
+        .neumorphism-shadow-inner(1px, 2px);
+        .neumorphism-shadow-outset(2px, 2px, 8%);
+        padding: 0 4px;
+        border-radius: 8px;
+        height: 28px;
+        font-size: small;
+    }
+
+    &.x-small {
+        .neumorphism-shadow-inner(1px, 1px);
+        .neumorphism-shadow-outset(1px, 2px, 6%);
+        padding: 0 3px;
+        border-radius: 6px;
+        height: 20px;
+        font-size: x-small;
+    }
+
+    &.rounded {
+        border-radius: 26px;
+    }
+
+    &:active {
+        .neumorphism-background(5%, 5%, @concave: "true", @radius: none);
+    }
+
+    &.right {
+        flex-direction: row-reverse;
+    }
+
+    & .content {
+        margin: 0 5px;
+        text-align: center;
+    }
+}

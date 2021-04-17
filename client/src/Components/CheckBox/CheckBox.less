@@ -1,0 +1,61 @@
+// out: false
+
+@import "../../../public/less/variables";
+@import "../../../public/less/mixins";
+
+[class*="checkbox-"] {
+    height: 22px;
+    margin: 5px;
+    .unselectable;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & .box {
+        height: 18px;
+        width: 18px;
+        border: 2px solid @background-color;
+        .neumorphism-background(@radius: 5px);
+        .neumorphism-shadow-outset(2px, 3px);
+        .pointer;
+        transition: 0.3s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &:active {
+            .neumorphism-shadow-outset(2px, 2px);
+            .neumorphism-shadow-inset(2px, 2px, 15%, 5%);
+        }
+
+        & .check {
+            margin-bottom: 1px;
+            font-size: 8pt;
+            color: @background-color;
+        }
+    }
+
+    &.checked {
+        @lighten: lighten(@accent-color, 0%);
+        
+        & .box {
+            .neumorphism-background(@background: @lighten, @radius: 5px);
+            .neumorphism-shadow-outset(2px, 2px);
+            .neumorphism-shadow-inset(2px, 2px, 15%, 15%, @color: @lighten);
+            transition: 0.3s;
+            
+            &:active {
+                .neumorphism-background(@background: @lighten, @concave: "true", @radius: 5px);
+            }
+        }
+    }
+
+    & .text {
+        margin: 2px 6px 0 6px;
+        .pointer;
+    }
+
+    &.right {
+        flex-direction: row-reverse;
+    }
+}

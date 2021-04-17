@@ -1,0 +1,47 @@
+// out: false
+
+@import "../../../public/less/variables";
+@import "../../../public/less/mixins";
+
+[class*="switch-"] {
+    width: 32px;
+    height: 16px;
+    margin: 5px;
+    .unselectable;
+    border: 2px solid @background-color;
+    .neumorphism-background;
+    .neumorphism-shadow-outset(2px, 3px);
+
+    & .track {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        transition: 0.3s;
+        .pointer;
+        .neumorphism-background;
+        .neumorphism-shadow-inset(2px, 3px, 20%);
+    }
+
+    &.active {
+        & .track {
+            .neumorphism-background(@background: @accent-color);
+            .neumorphism-shadow-inset(2px, 3px, 20%, @color: @accent-color);
+        }
+
+        & .thumb {
+            margin-left: 55%;
+            .neumorphism-background;
+            .neumorphism-shadow-outset(1px, 1px, 15%, 15%, @color: @accent-color);
+        }
+    }
+
+    & .thumb {
+        transition: 0.3s;
+        height: 12px;
+        width: 12px;
+        margin: 2px;
+        cursor: pointer;
+        .neumorphism-background(@background: @accent-color);
+        .neumorphism-shadow-outset(1px, 1px, 15%, 15%, @delta: 2px);
+    }
+}

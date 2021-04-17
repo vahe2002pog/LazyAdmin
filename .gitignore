@@ -1,0 +1,10 @@
+.vscode/
+__pycache__/
+client/node_modules/
+client/public/build/
+config.py
+Логика.txt
+venv/
+users/
+desktop.ini
+client/package-lock.json

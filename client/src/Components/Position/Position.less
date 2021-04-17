@@ -1,0 +1,49 @@
+// out: false
+
+@import "../../../public/less/variables";
+@import "../../../public/less/mixins";
+
+[class*="position-"] {
+    margin: 5px;
+    width: 120px;
+    height: 120px;
+    padding: 2.5px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    .neumorphism-element;
+    .unselectable;
+    & div{
+        width: calc(100% - 5px);
+        height: calc(100% - 5px);
+        margin: 2.5px;
+        .pointer;
+        .neumorphism-background(10%, 15%, @convex:"true", @radius: none);
+        .neumorphism-shadow-outset(1px, 2px);
+        .neumorphism-shadow-inner(1px, 2px);
+
+        &.rounded-1{
+            border-radius: 14px 0 0 0;
+        }
+        &.rounded-2{
+            border-radius: 0 14px 0 0;
+        }
+        &.rounded-3{
+            border-radius: 0 0 0 14px;
+        }
+        &.rounded-4{
+            border-radius: 0 0 14px 0;
+        }
+
+        &:active{
+            .neumorphism-background(10%, 15%, @concave: "true", @radius: none);
+        }
+
+        &.pressed{
+            .neumorphism-background(@radius: none);
+            .neumorphism-shadow-inset(1px, 2px);
+            cursor: auto;
+        }
+    }
+
+}

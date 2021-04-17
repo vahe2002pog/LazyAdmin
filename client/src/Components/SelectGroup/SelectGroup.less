@@ -1,0 +1,67 @@
+// out: false
+
+@import "../../../public/less/variables";
+@import "../../../public/less/mixins";
+
+.select-container {
+    position: relative;
+    height: 54px;
+    & [class*="select-"] {
+        position: absolute;
+        background-color: @background-color;
+        overflow: hidden;
+        z-index: 10;
+        .unselectable; 
+        .neumorphism-element;
+    }
+
+    & .header {
+        display: flex;
+        padding: 2px;
+        justify-content: space-between;
+        align-items: center;
+        height: 30px;
+        flex-wrap: nowrap;
+    }
+
+    & .header-text {
+        flex-grow: 1;
+        margin-left: 15px;
+        font-size: small;
+    }
+
+    & .icon {
+        margin-left: 10px;
+        margin-right: 5px;
+        transition: 0.3s;
+        transform: rotate(0deg);
+        &.rotate {
+            transform: rotate(180deg);
+        }
+    }
+    & .options {
+        overflow: hidden;
+        transition: 0.3s;
+        height: 0px;
+    }
+    & .item {
+        display: flex;
+        align-items: center;
+        padding: 5px 10px;
+        height: 32px;
+        &:hover {
+            background-color: darken(@background-color, 3%);
+        }
+        &:active {
+            background-color: darken(@background-color, 5%);
+        }
+        & img {
+            height: 100%;
+            margin-right: 10px;
+            border: 2px solid @background-color;
+            border-radius: 32px;
+            .neumorphism-shadow-outset(2px, 3px);
+            object-fit: cover;
+        }
+    }
+}

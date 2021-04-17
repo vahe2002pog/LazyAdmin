@@ -1,0 +1,65 @@
+//main: ../global.less
+
+.neumorphism-background(
+    @blackout: 15%;
+    @lightening: 10%;
+    @concave: "false";
+    @convex: "false";
+    @background: @background-color;
+    @radius: @border-radius;
+) {
+    background:
+        if(@concave ="true",
+            linear-gradient(145deg, darken(@background, @blackout), lighten(@background, @lightening)),
+            if(@convex ="true",
+                linear-gradient(145deg, lighten(@background, @lightening), darken(@background, @blackout)),
+                @background));
+    border-radius: @radius;
+}
+
+.neumorphism-shadow-outset(@distance: 3px; @blur: 5px; @blackout: 25%; @lightening: 25%; @color: @background-color; @delta: 0px; ) {
+    @delta-distance: @delta - @distance;
+    box-shadow+: @distance @distance @blur darken(@color, @blackout),
+        @delta-distance @delta-distance @blur lighten(@color, @lightening);
+}
+
+.neumorphism-shadow-inset(@distance: 3px; @blur: 5px; @blackout: 25%; @lightening: 25%; @color: @background-color; @delta: 0px; ) {
+    @delta-distance: @delta - @distance;
+    box-shadow+: inset @distance @distance @blur darken(@color, @blackout),
+        inset @delta-distance @delta-distance @blur lighten(@color, @lightening);
+}
+
+.neumorphism-shadow-inner(@distance: 3px; @blur: 5px; @blackout: 25%; @lightening: 25%; @color: @background-color; @delta: 0px; ) {
+    @delta-distance: @delta - @distance;
+    box-shadow+: inset @distance @distance @blur lighten(@color, @lightening),
+        inset @delta-distance @delta-distance @blur darken(@color, @blackout);
+}
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.neumorphism-element {
+    .neumorphism-background;
+    .neumorphism-shadow-outset;
+    margin: 10px;
+}
+
+.neumorphism-border {
+    border: 1px solid @border-color;
+    box-shadow+: 0 0 2px 1px @border-shadow-color;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.disabled{
+    pointer-events: none;
+    opacity: 0.6;
+}
