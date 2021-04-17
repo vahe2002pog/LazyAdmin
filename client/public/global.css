@@ -71,11 +71,6 @@ body {
   margin: 0;
   background-color: #EBECF0;
 }
-.selectGroup {
-  width: min-content;
-  min-width: 250px;
-  margin: 10px;
-}
 hr {
   border: none;
   margin: 0;

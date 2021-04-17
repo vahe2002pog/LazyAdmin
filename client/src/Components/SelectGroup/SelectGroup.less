@@ -6,11 +6,16 @@
 .select-container {
     position: relative;
     height: 54px;
+    min-width: 220px;
+    width: min-content;
+    margin: 10px;
+
     & [class*="select-"] {
         position: absolute;
         background-color: @background-color;
         overflow: hidden;
         z-index: 10;
+        width: 100%;
         .unselectable; 
         .neumorphism-element;
     }
