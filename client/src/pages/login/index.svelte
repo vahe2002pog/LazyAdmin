@@ -3,15 +3,6 @@
     import Button from "../../Components/Button/Button.svelte";
     import { mdiVk } from "@mdi/js";
 
-    let isAuth = true;
-
-    checkAuth().then((response) => {
-        isAuth = response?.auth;
-        if (isAuth) {
-            window.location.pathname = "/";
-        }
-    });
-
     function login() {
         window.location.pathname = "/api/login";
     }
@@ -31,12 +22,10 @@
     }
 </style>
 
-{#if !isAuth}
-    <div id="content">
-        <div class="text">
-            <h1>Добро пожаловать!</h1>
-            <h3>Необходимо авторизоваться через Вконтакте.</h3>
-        </div>
-        <Button size="large" right path={mdiVk} on:click={login} >Авторизация</Button>
+<div id="content">
+    <div class="text">
+        <h1>Добро пожаловать!</h1>
+        <h3>Необходимо авторизоваться через Вконтакте.</h3>
     </div>
-{/if}
+    <Button size="large" right path={mdiVk} on:click={login} >Авторизация</Button>
+</div>

@@ -57,6 +57,29 @@ def use_guard(f):
         return f(token, *args, **kws)
     return decorated_function
 
+def get_user(token):
+    if token not in user_cache:
+        response = requests.get(
+            "https://api.vk.com/method/users.get?access_token={}&fields=photo_100&v=5.126".format(token))
+        user_cache[token] = response
+        user_cache_stack.append(token)
+    else:
+        if user_cache_stack[-1] != token:
+            user_cache_stack.remove(token)
+            user_cache_stack.append(token)
+    if len(user_cache_stack) > 100:
+        del user_cache_stack[0]
+    user = user_cache[token].json().get("response")
+    return user
+
+
+
+def get_groups(token):
+    response = requests.get(
+        "https://api.vk.com/method/groups.get?access_token={}&extended=1&filter=editor&v=5.126".format(token))
+    groups = response.json().get("response").get("items")
+    return groups
+
 # @use_guard
 
 @app.route('/login', methods=['GET'])
@@ -95,3 +118,13 @@ def login_page():
         "https://oauth.vk.com/authorize?client_id={0}&display=page&redirect_uri={1}&scope=video,stories,offline&response_type=code&v=5.126".format(
             app_id, website_address),
         code=302)
+
+@app.route("/api/user")
+@use_guard
+def user(token):
+    return answer_template(get_user(token)[0])
+
+@app.route("/api/groups")
+@use_guard
+def groups(token):
+    return answer_template(get_groups(token))

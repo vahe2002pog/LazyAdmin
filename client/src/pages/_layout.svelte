@@ -2,25 +2,37 @@
     import { checkAuth } from "../store";
 
     let isAuth = false;
+    let showContent = false;
 
-    if (window.location.pathname !== "/login") {
-        checkAuth().then((response) => {
-            isAuth = response?.auth;
-            if (!isAuth) {
+    checkAuth().then((response) => {
+        isAuth = response?.auth;
+        if (isAuth) {
+            if (window.location.pathname === "/login") {
+                window.location.pathname = "/";
+            }
+            else{
+                showContent = true;
+            }
+        } else {
+            if (window.location.pathname !== "/login") {
                 window.location.pathname = "/login";
             }
-        });
-    }
-
+            else{
+                showContent = true;
+            }
+        }
+    });
 </script>
 
 <style>
-    #site-body{
+    #site-body {
         width: 100%;
         height: 100%;
     }
 </style>
 
 <div id="site-body">
-    <slot />
+    {#if showContent}
+        <slot />
+    {/if}
 </div>

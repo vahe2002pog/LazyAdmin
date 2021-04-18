@@ -4,10 +4,10 @@ export function getCookie(key) {
     let cookies = document.cookie.split('; ');
     let cookieKey = key + "=";
     let cookie = cookies.find((cookie) => cookie.indexOf(cookieKey) === 0)
-    if(cookie){
+    if (cookie) {
         return cookie.replace(cookieKey, '');
     }
-    else{
+    else {
         return undefined
     }
 }
@@ -48,4 +48,14 @@ export function checkAuth() {
     }).catch(() => {
         return { auth: false };
     });
+}
+
+export function getUser(){
+    const url = "/api/user";
+    return request(url);
+}
+
+export function getGroups(){
+    const url = "/api/groups";
+    return request(url);
 }
