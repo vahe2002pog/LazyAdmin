@@ -95,21 +95,15 @@
             .watermark-params {
                 display: flex;
                 flex-direction: column;
+                overflow: hidden;
 
-                &.opened {
-                    height: auto;
-                }
-
-                &.closed {
-                    height: 0;
-                }
-
-                & .controls{
+                & .controls {
                     display: grid;
                     margin: 10px 0;
                     grid-template-columns: 1fr 1fr;
 
-                    & .position, & .sliders{
+                    & .position,
+                    & .sliders {
                         display: flex;
                         flex-direction: column;
                         align-items: center;

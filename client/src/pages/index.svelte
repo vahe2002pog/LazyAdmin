@@ -15,6 +15,20 @@
     let indentH = 0;
     let opacity = 50;
 
+    function switchChange(e){
+        let wmParams = document.querySelector(".watermark-params");
+        if (e.active) {
+            wmParams.style.height = "min-content";
+            let height = wmParams.offsetHeight + "px";
+            wmParams.style.height = "0px";
+            setTimeout(() => {
+                wmParams.style.height = height;
+            }, 0);
+        } else {
+            wmParams.style.height = "0px";
+        }
+    }
+
     getUser().then((response) => {
         user = {
             profileUrl: `https://vk.com/id${response.id}`,
@@ -76,9 +90,9 @@
                 <div style="margin: 0 20px;">
                     Добавить вотермарку
                 </div>
-                <Switch bind:active></Switch>
+                <Switch on:change={switchChange}/>
             </div>
-            <div class="watermark-params {active ? "opened": "closed"}">
+            <div class="watermark-params">
                 <File mini accept="image/*, .pdf"/>
                 <div class="controls">
                     <div class="position">

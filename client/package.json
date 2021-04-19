@@ -6,7 +6,7 @@
     "build": "rollup -c && routify export",
     "dev": "routify -c dev:app",
     "dev:app": "rollup -cw",
-    "start": "sirv public --no-clear"
+    "start": "sirv public --no-clear -p 8080"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
