@@ -1,5 +1,5 @@
 <script>
-    import { checkAuth } from "../store";
+    import { checkAuth, getCookie } from "../store";
 
     let isAuth = false;
     let showContent = false;
@@ -14,11 +14,16 @@
                 showContent = true;
             }
         } else {
-            if (window.location.pathname !== "/login") {
-                window.location.pathname = "/login";
+            if(getCookie('token')){
+                window.location.pathname = "/api/login";
             }
             else{
-                showContent = true;
+                if (window.location.pathname !== "/login") {
+                    window.location.pathname = "/login";
+                }
+                else{
+                    showContent = true;
+                }
             }
         }
     });

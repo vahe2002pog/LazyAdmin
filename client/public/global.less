@@ -2,7 +2,7 @@
 @import "less/mixins";
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap');
 
-*{
+* {
     font-family: @font-name;
     color: @font-color;
     font-weight: 600;
@@ -22,7 +22,8 @@ hr {
     margin: 0;
     .neumorphism-background;
     .neumorphism-shadow-inset(1px, 2px);
-    &.none-rounded{
+
+    &.none-rounded {
         .neumorphism-background(@radius: 0px);
     }
 }
@@ -42,36 +43,45 @@ a {
 }
 
 * ::-webkit-scrollbar {
-    width: 10px;
+    width: 15px;
+    height: 15px;
+    background: transparent;
+
     &-track {
         background: transparent;
     }
+
     &-thumb {
-        border: 2px solid rgba(0, 0, 0, 0);
+        border: 4px solid rgba(0, 0, 0, 0);
         background-clip: padding-box;
-        .neumorphism-background(@background: transparent, @radius: 10px);
-        .neumorphism-shadow-inset(3px, 6px, 5%,  @color: @accent-color);
+        .neumorphism-background(@background: transparent, @radius: 15px);
+        .neumorphism-shadow-inset(3px, 6px, 5%, @color: @accent-color);
     }
-    &-track-piece{
+
+    &-track-piece {
         &:end {
             background: transparent;
             margin-bottom: 10px;
+            margin-right: 10px;
         }
 
         &:start {
             background: transparent;
             margin-top: 10px;
+            margin-left: 10px;
         }
     }
 }
 
-input[type=text], input[type=number], textarea {
-    margin: 5px 10px;
+input[type=text],
+textarea {
+    margin: 10px;
     .neumorphism-background;
     .neumorphism-shadow-inset(3px, 5px);
     .neumorphism-border;
     padding: 8px;
     padding-left: 15px;
+
     &::placeholder {
         color: rgba(@font-color, 0.5);
         .unselectable;
@@ -80,10 +90,13 @@ input[type=text], input[type=number], textarea {
 
 textarea {
     resize: none;
-    white-space: normal!important;
+    white-space: normal !important;
     cursor: auto;
 }
 
-input:focus, textarea:focus, button:focus, select:focus {
+input:focus,
+textarea:focus,
+button:focus,
+select:focus {
     outline: none;
 }
