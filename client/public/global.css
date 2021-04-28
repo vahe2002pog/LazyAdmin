@@ -6,6 +6,14 @@
   -ms-user-select: none;
   user-select: none;
 }
+.selectable {
+  -webkit-touch-callout: text;
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
 .neumorphism-element {
   background: #EBECF0;
   border-radius: 20px;
@@ -25,6 +33,11 @@
 }
 .text-center {
   text-align: center;
+}
+.stretch {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 @font-face {
   font-family: 'Comfortaa';

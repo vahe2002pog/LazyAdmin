@@ -4,8 +4,10 @@
 @accent-color: #2787F5;
 @background-color: #EBECF0;
 // @background-color: #282c30;
+@inverted-background-color: difference(@background-color, #FFF);
 @font-color: if(lightness(@background-color) > 60%; darken(@background-color, 60%); lighten(@background-color, 60%));
+@inverted-font-color: difference(@font-color, #FFF);
 @border-color: if(lightness(@background-color) > 60%; darken(@background-color, 5%); lighten(@background-color, 5%));
 @border-shadow-color: if(lightness(@background-color) > 60%; darken(@background-color, 8%); lighten(@background-color, 8%));
 @border-radius: 20px;
-@font-color-light: #fff;
+@font-color-light: #f0f0f0;

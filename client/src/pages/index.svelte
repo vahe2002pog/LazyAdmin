@@ -5,6 +5,7 @@
     import Position from "../Components/Position/Position.svelte";
     import Switch from "../Components/Switch/Switch.svelte";
     import File from "../Components/File/File.svelte";
+    import FixedLink from "../Components/FixedLink/FixedLink.svelte";
     import { getUser, getGroups } from "../store";
 
     let user;
@@ -17,8 +18,8 @@
 
     function switchChange(e){
         let wmParams = document.querySelector(".watermark-params");
-        if (e.active) {
-            wmParams.style.height = "min-content";
+        if (e.detail.active) {
+            wmParams.style.height = "max-content";
             let height = wmParams.offsetHeight + "px";
             wmParams.style.height = "0px";
             setTimeout(() => {
@@ -78,12 +79,15 @@
         </div>
         <div class="menu">
             <div class="text-center" style="margin: 5px 0;">Параметры видеозаписей</div>
-            <input type="text" placeholder="Название видеозаписей">
-            <textarea cols="30" rows="5" placeholder="Описание видеозаписей"></textarea>
-            <div class="checkboxes">
-                <CheckBox>Зацикливать воспроизведение</CheckBox>
-                <CheckBox>Отключить комментарии</CheckBox>
-                <CheckBox>Приватный доступ</CheckBox>
+            <div class="stretch">
+                <input type="text" placeholder="Название видеозаписей">
+                <textarea cols="30" rows="5" placeholder="Описание видеозаписей"></textarea>
+                <div class="checkboxes">
+                    <CheckBox>Зацикливать воспроизведение</CheckBox>
+                    <CheckBox>Отключить комментарии</CheckBox>
+                    <CheckBox>Приватный доступ</CheckBox>
+                </div>
+                <FixedLink fixedLink="https://vk.com/" placeholder="Ссылка в видео"></FixedLink>
             </div>
             <hr size="8px">
             <div class="switch-text">
