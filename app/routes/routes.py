@@ -1,5 +1,7 @@
+from msilib.schema import Directory
 from os import path
 from functools import wraps
+from urllib import response
 from flask import (abort, jsonify, make_response, redirect, render_template,
                    request, send_from_directory, url_for, Markup, Response)
 import random
@@ -18,8 +20,13 @@ from app.config import service_token, secure_key, app_id, website_address, JWT_S
 import requests
 import json
 
+DATA_DIR = './client/src/users'
+PUBLIC_DIR = '../client/public'
+ALLOWED_EXTENSIONS_IMAGE = {'png', 'jpg', 'jpeg'}
+
 user_cache = dict()
 user_cache_stack = []
+
 
 def auth_check(token):
     response = requests.get(
@@ -30,13 +37,15 @@ def auth_check(token):
     else:
         return {'valid': False}
 
-def answer_template(data=None, error=None, meta=None):
+
+def answer_template(data=None, error=None, meta=None, code=None):
     answer = {
         'data': data,
         'error': error,
         'meta': meta
     }
-    return json.dumps(answer)
+    return json.dumps(answer), code
+
 
 def use_guard(f):
     @wraps(f)
@@ -48,7 +57,8 @@ def use_guard(f):
         jwt_token = str.replace(str(data), 'Bearer ', '')
         token = None
         try:
-            token = jwt.decode(jwt_token, JWT_SECRET, algorithms=['HS256']).get("token")
+            token = jwt.decode(jwt_token, JWT_SECRET,
+                               algorithms=['HS256']).get("token")
             answer = auth_check(token)
             if not answer.get('valid'):
                 abort(401)
@@ -56,6 +66,7 @@ def use_guard(f):
             abort(401)
         return f(token, *args, **kws)
     return decorated_function
+
 
 def get_user(token):
     if token not in user_cache:
@@ -73,24 +84,44 @@ def get_user(token):
     return user
 
 
-
 def get_groups(token):
     response = requests.get(
         "https://api.vk.com/method/groups.get?access_token={}&extended=1&filter=editor&v=5.126".format(token))
     groups = response.json().get("response").get("items")
     return groups
 
-# @use_guard
+def get_extension(file_name):
+    # return file_name.split('.')[-1].lower()
+    return file_name.rsplit('.', 1)[1].lower()
+
+
+def allowed_file(file_name, extensions):
+    return '.' in file_name and \
+        get_extension(file_name) in extensions
+
+
+def clear_directory(path):
+    for file_name in os.listdir(path):
+        file = path + file_name
+        if os.path.isfile(file):
+            os.remove(file)
+
+def get_user_watermark(user_id):
+    path = DATA_DIR + '/user' + user_id + '/watermark'
+    for file_name in os.listdir(path):
+        if allowed_file(file_name, ALLOWED_EXTENSIONS_IMAGE):
+            return file_name
+    return None
 
 @app.route('/login', methods=['GET'])
 @app.route('/', methods=['GET'])
 def index_page():
-    return send_from_directory('../client/public', 'index.html')
+    return send_from_directory(PUBLIC_DIR, 'index.html')
 
 
 @app.route('/<path:path>')
 def local_storage(path):
-    return send_from_directory('../client/public', path)
+    return send_from_directory(PUBLIC_DIR, path)
 
 
 @app.route('/api/code/<code>', methods=['GET'])
@@ -100,17 +131,20 @@ def register(code):
             'https://oauth.vk.com/access_token?client_id={0}&client_secret={1}&redirect_uri={2}&code={3}&v=5.126'.format(app_id, secure_key, website_address, code))
         if response.json().get('access_token') != None:
             token = response.json().get('access_token')
-            jwt_token = jwt.encode({'token' : token},JWT_SECRET, algorithm='HS256')
+            jwt_token = jwt.encode(
+                {'token': token}, JWT_SECRET, algorithm='HS256')
             resp = make_response(redirect(url_for("index_page")))
             resp.set_cookie("token", jwt_token)
             return resp
         return 'code is not valid', 400
     return 'code is not defined', 400
 
+
 @app.route('/api/authcheck', methods=['GET'])
 @use_guard
 def auth(token):
     return answer_template({"auth": True})
+
 
 @app.route("/api/login")
 def login_page():
@@ -119,12 +153,46 @@ def login_page():
             app_id, website_address),
         code=302)
 
+
 @app.route("/api/user")
 @use_guard
 def user(token):
     return answer_template(get_user(token)[0])
 
+
 @app.route("/api/groups")
 @use_guard
 def groups(token):
     return answer_template(get_groups(token))
+
+
+@app.route("/user/watermark", methods=["POST"])
+@use_guard
+def load_watermark(token):
+    if 'file' not in request.files:
+        return answer_template(error="file not found", code=400)
+    file = request.files['file']
+    if file.filename == '':
+        return answer_template(error="file not found", code=400)
+    user_id = str(get_user(token)[0].get('id'))
+    file_name = file.filename
+    if file and allowed_file(file_name, ALLOWED_EXTENSIONS_IMAGE):
+        file_name = "watermark." + get_extension(file_name)
+        path = DATA_DIR + '/user' + user_id + "/watermark"
+        os.makedirs(path, exist_ok=True)
+        clear_directory(path)
+        file.save(os.path.join(path, file_name))
+        return answer_template(code=200)
+    else:
+        return answer_template(error="wrong file extension", code=415)
+
+@app.route("/user/watermark", methods=["GET"])
+@use_guard
+def get_watermark(token):
+    user_id = str(get_user(token)[0].get('id'))
+    watermark = get_user_watermark(user_id)
+    if watermark:
+        directory = '.' + DATA_DIR + '/user' + user_id + '/watermark'
+        return send_from_directory(directory, watermark)
+    else:
+        return answer_template(error="image not found", code=404)

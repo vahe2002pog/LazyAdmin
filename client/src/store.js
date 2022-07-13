@@ -12,22 +12,41 @@ export function getCookie(key) {
     }
 }
 
-function request(url, method = 'GET', body = null) {
+export function request(url, method = 'GET', body = null, accept = 'application/json', contentType = 'application/json') {
     const token = getCookie('token');
+    const headers = {};
+    headers.Authorization = `Bearer ${token ? token : ''}`;
+    if (accept) {
+        headers.Accept = accept;
+    }
+    if (contentType) {
+        headers["Content-Type"] = contentType;
+    }
     const options = {
         method,
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token ? token : ''}`
-        }
+        headers
     };
     if (body) {
-        options.body = JSON.stringify(body);
+        options.body = body;
     }
 
     return fetch(url, options).then((response) => {
         return response.ok ? response.json().then((json) => json.data) : null;
+    });
+}
+
+export function getFile(url){
+    const token = getCookie('token');
+    const headers = {};
+    const method = "GET";
+    headers.Authorization = `Bearer ${token ? token : ''}`;
+    const options = {
+        method,
+        headers
+    };
+
+    return fetch(url, options).then((response) => {
+        return response.ok ? response.blob() : null;
     });
 }
 
@@ -50,12 +69,12 @@ export function checkAuth() {
     });
 }
 
-export function getUser(){
+export function getUser() {
     const url = "/api/user";
     return request(url);
 }
 
-export function getGroups(){
+export function getGroups() {
     const url = "/api/groups";
     return request(url);
 }

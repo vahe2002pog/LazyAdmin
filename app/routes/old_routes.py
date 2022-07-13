@@ -32,14 +32,17 @@ def get_svg_by_name(file_name, stroke_color=None, fill_color=None):
         line = re.sub(r'\/\*f\*\/.+\/\*f\*\/', fill_color, line)
     return line
 
+
 def get_extension(file_name):
     return file_name.split(".")[-1]
+
 
 def get_name(file_name, extension=None):
     if extension == None:
         extension = get_extension(file_name)
     name = file_name.replace("."+extension, "")
     return name
+
 
 def get_datetime_name():
     text = str(datetime.datetime.now()).replace('-', "")
@@ -48,9 +51,11 @@ def get_datetime_name():
     text = text.replace(".", "")
     return text
 
+
 def allowed_file(file_name, extensions):
     return '.' in file_name and \
-           file_name.rsplit('.', 1)[1].lower() in extensions
+        file_name.rsplit('.', 1)[1].lower() in extensions
+
 
 def auth_check(token):
     response = requests.get(
@@ -61,11 +66,13 @@ def auth_check(token):
     else:
         return {"valid": False}
 
+
 def get_groups(token):
     response = requests.get(
         "https://api.vk.com/method/groups.get?access_token={}&extended=1&filter=editor&v=5.126".format(token))
     groups = response.json().get("response").get("items")
     return groups
+
 
 def get_user(token):
     if token not in user_cache:
@@ -252,7 +259,8 @@ def videoDelete(file_name):
             answer = auth_check(token)
             if answer.get("valid") == True:
                 user = get_user(token)[0]
-                directory = DATA_DIR + "/user" + str(user.get("id")) + "/videos/"
+                directory = DATA_DIR + "/user" + \
+                    str(user.get("id")) + "/videos/"
                 if file_name == "all":
                     file_list = os.listdir(directory)
                     if len(file_list) > 0:
@@ -271,6 +279,7 @@ def videoDelete(file_name):
     else:
         return "not valid"
 
+
 @app.route("/getVideos")
 def getVideos():
     token = request.cookies.get("token")
@@ -285,7 +294,8 @@ def getVideos():
                 for file in file_list:
                     extension = get_extension(file)
                     if extension in ALLOWED_EXTENSIONS_VIDEO:
-                        my_video = Video(directory, get_name(file, extension), extension)
+                        my_video = Video(directory, get_name(
+                            file, extension), extension)
                         files.append(my_video.print())
                 return json.dumps(files)
             else:

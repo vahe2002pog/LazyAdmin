@@ -54,7 +54,10 @@
     function dropHandler(e) {
         e.preventDefault();
         let items = Object.values(e?.dataTransfer?.items);
-        files = new FileListItems(getFiles(items));
+        let tempFiles = new FileListItems(getFiles(items));
+        if (tempFiles != []) {
+            files = new FileListItems(tempFiles);
+        }
         changeEvent();
         canDrop = false;
         setTitle();
@@ -62,9 +65,8 @@
 
     function dragLeaveHandler(e) {
         counter--;
-        if(counter === 0){
+        if (counter === 0) {
             canDrop = false;
-            console.log(e);
         }
     }
 
@@ -82,7 +84,16 @@
     }
 
     function fileInputChange(e) {
-        files = e.target.files;
+        e.stopPropagation();
+        let tempFiles = [];
+        Array.from(e.target.files).forEach((file) => {
+            if (isValid(accept, file.type)) {
+                tempFiles.push(file);
+            }
+        });
+        if (tempFiles != []) {
+            files = new FileListItems(tempFiles);
+        }
         changeEvent();
         setTitle();
     }
@@ -103,7 +114,7 @@
         }
     }
 
-    function dragEnterHandler(){
+    function dragEnterHandler() {
         counter++;
     }
 
@@ -112,30 +123,34 @@
     }
 </script>
 
-<style lang="less" global>
-    @import "File.less";
-</style>
-
 <div
     {style}
-    class="{$$props.class ? $$props.class : ''} {localClass}{mini ? ' mini' : ' big'}{canDrop ? ' drop' : ''}{disabled ? ' disabled' : ''}"
-    use:events>
+    class="{$$props.class ? $$props.class : ''} {localClass}{mini
+        ? ' mini'
+        : ' big'}{canDrop ? ' drop' : ''}{disabled ? ' disabled' : ''}"
+    use:events
+>
     <input
         id={localClass}
         {multiple}
         type="file"
         {accept}
-        on:change={fileInputChange} />
+        on:change={fileInputChange}
+    />
     <div
         class="field"
         on:dragover={dragOverHandler}
         {title}
         on:drop={dropHandler}
         on:dragenter={dragEnterHandler}
-        on:dragleave={dragLeaveHandler}>
+        on:dragleave={dragLeaveHandler}
+    >
         <label for={localClass} style="z-index: 1;" class="label">
             <Button
-                style={mini ? 'border-top-left-radius: 36px; border-bottom-left-radius: 36px; margin: 0;' : ''}>
+                style={mini
+                    ? "border-top-left-radius: 36px; border-bottom-left-radius: 36px; margin: 0;"
+                    : ""}
+            >
                 {buttonTitle}
             </Button>
         </label>
@@ -152,3 +167,7 @@
         {/if}
     </div>
 </div>
+
+<style lang="less" global>
+    @import "File.less";
+</style>
