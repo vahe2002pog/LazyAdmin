@@ -1,13 +1,14 @@
 export function isValid(accept, type) {
-    accept = accept.split(",");
-    for (let i = 0; i < accept.length; i++) {
-        accept[i] = accept[i].trim();
+    accept = accept.split(",").map(item => {return item.trim();});
+    if (accept.includes("*.*") || accept.includes(".*") || accept.includes("*/*")) {
+        return true;
     }
     if (accept.includes(type)) {
         return true;
     }
-    let fileType = type.split("/")[0];
-    let fileExtension = type.split("/")[1];
+    let fileType;
+    let fileExtension;
+    [fileType, fileExtension] = type.split("/");
     if (accept.includes(fileType + "/*")) {
         return true;
     }

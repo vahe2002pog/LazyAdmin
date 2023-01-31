@@ -159,6 +159,21 @@ textarea {
   white-space: normal !important;
   cursor: auto;
 }
+.text.x-large {
+  font-size: x-large;
+}
+.text.large {
+  font-size: large;
+}
+.text.normal {
+  font-size: normal;
+}
+.text.small {
+  font-size: small;
+}
+.text.x-small {
+  font-size: x-small;
+}
 input:focus,
 textarea:focus,
 button:focus,

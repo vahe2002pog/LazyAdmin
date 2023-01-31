@@ -7,17 +7,24 @@
     import Switch from "../Components/Switch/Switch.svelte";
     import FileInput from "../Components/File/File.svelte";
     import FixedLink from "../Components/FixedLink/FixedLink.svelte";
+    import PreviewBox from "../Components/PreviewBox/PreviewBox.svelte";
+    import Card from "../Components/Card/Card.svelte";
     import { getUser, getGroups, request, getFile } from "../store";
     import { mdiVideo } from "@mdi/js";
 
     let user;
     let groups = [];
     let active = true;
+    let position = 4;
     let size = 50;
-    let indentV = 0;
-    let indentH = 0;
+    let indents = [0, 0];
     let opacity = 50;
     let watermark = "";
+    let videoList = [];
+
+    (function init() {
+        getWatermark();
+    })();
 
     function switchChange(e) {
         let wmParams = document.querySelector(".watermark-params");
@@ -33,24 +40,53 @@
         }
     }
 
-    function uploadWatermark(image) {
+    function getWatermark() {
+        getFile("/user/watermark").then((blub) => {
+            if (blub) {
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    watermark = e.target.result;
+                };
+                reader.readAsDataURL(blub);
+            }
+        });
+    }
+
+    function getPreview(video) {
+        getFile("/user/video/preview/" + video.preview).then((blub) => {
+            if (blub) {
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    video.preview = e.target.result;
+                    videoList = videoList.concat([video]);
+                };
+                reader.readAsDataURL(blub);
+            }
+        });
+    }
+
+    function uploadWatermark(e) {
+        let image = e?.detail?.files;
         const formData = new FormData();
         formData.append("file", image[0]);
         request("/user/watermark", "POST", formData, null, null).then(
             (response) => {
-                getFile("/user/watermark").then((blub) => {
-                    let reader = new FileReader();
-                    reader.onload = (e) => {
-                        watermark = e.target.result;
-                    };
-                    reader.readAsDataURL(blub);
-                });
+                getWatermark();
             }
         );
     }
 
-    function fileInputChange(e) {
-        uploadWatermark(e?.detail?.files);
+    function uploadVideos(e) {
+        let videos = e?.detail?.files;
+        for (let i = 0; i < videos.length; i++) {
+            const formData = new FormData();
+            formData.append("file", videos[i]);
+            request("/user/video", "POST", formData, null, null).then(
+                (response) => {
+                    getPreview(response);
+                }
+            );
+        }
     }
 
     getUser().then((response) => {
@@ -94,7 +130,34 @@
         </div>
     </div>
     <div class="site-body">
-        <div class="content" />
+        <div class="content">
+            <FileInput
+                size="large"
+                multiple
+                buttonTitle="Выберите файл(ы)"
+                accept="video/*"
+                fieldTitle="или <br>  перетащите их сюда.<br>"
+                style="margin: 0;"
+                on:change={uploadVideos}
+            >
+                {#each videoList as video}
+                    <Card src={video.preview}>
+                        <div
+                            style="overflow: hidden;
+                        text-overflow: ellipsis;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 2;
+                                line-clamp: 2; 
+                        -webkit-box-orient: vertical;"
+                            title={video.name}
+                        >
+                            {video.name}
+                        </div>
+                        {video.duration}
+                    </Card>
+                {/each}
+            </FileInput>
+        </div>
         <div class="menu">
             <div class="text-center" style="margin: 5px 0;">
                 Параметры видеозаписей
@@ -122,11 +185,11 @@
                 <Switch on:change={switchChange} />
             </div>
             <div class="watermark-params">
-                <FileInput mini accept="image/*" on:change={fileInputChange} />
+                <FileInput mini accept="image/*" on:change={uploadWatermark} />
                 <div class="controls">
                     <div class="position">
                         <div>Расположение</div>
-                        <Position />
+                        <Position bind:position />
                     </div>
                     <div class="sliders">
                         <div>Размер - {size}</div>
@@ -138,10 +201,10 @@
                             max="100"
                             step="0.1"
                         />
-                        <div>Отступы - ({indentH}; {indentV})</div>
+                        <div>Отступы - ({indents[0]}; {indents[1]})</div>
                         <RangeSlider
                             thumb
-                            bind:value={indentH}
+                            bind:value={indents[0]}
                             controls
                             min="0"
                             max="50"
@@ -149,7 +212,7 @@
                         />
                         <RangeSlider
                             thumb
-                            bind:value={indentV}
+                            bind:value={indents[1]}
                             controls
                             min="0"
                             max="50"
@@ -167,21 +230,27 @@
                     step="1"
                 />
                 <div class="text-center">Предпросмотр</div>
-                <!-- <div class="preview-boxes">
-                    <div class="preview-box preview-vertical-box">
-                        <div class="watermark">
-                            <img src={watermark} alt="" />
-                        </div>
-                        <div class="icon">
-                            <Icon path={mdiVideo} />
-                        </div>
-                    </div>
-                    <div class="preview-box preview-horizontal-box">
-                        <div class="icon">
-                            <Icon path={mdiVideo} />
-                        </div>
-                    </div>
-                </div> -->
+                <div class="preview-boxes">
+                    <PreviewBox
+                        path={mdiVideo}
+                        {size}
+                        {indents}
+                        {opacity}
+                        {position}
+                        src={watermark}
+                        vertical
+                        style="width:100%"
+                    />
+                    <PreviewBox
+                        path={mdiVideo}
+                        {size}
+                        {indents}
+                        {opacity}
+                        {position}
+                        src={watermark}
+                        style="width:100%"
+                    />
+                </div>
             </div>
         </div>
     </div>

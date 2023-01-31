@@ -1,0 +1,47 @@
+@import "../../../public/less/variables";
+@import "../../../public/less/mixins";
+@ratio: 4/6;
+@row-template: @ratio * 100%;
+@gap: 5px;
+
+[class*="card-"] {
+    .neumorphism-element;
+    aspect-ratio: @ratio;
+    width: 120px;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: calc(@row-template + @gap) auto auto;
+    justify-items: center;
+
+    // display: flex;
+    // align-items: center;
+    // flex-direction: column;
+    padding: 5px;
+
+    & .image-container {
+        width: 100%;
+        aspect-ratio: 1;
+        overflow: hidden;
+        clip: auto;
+        border-radius: 15px;
+
+        & img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+        }
+    }
+
+    & hr{
+        width: 100%;
+        margin-bottom: @gap;
+    }
+
+    & .text{
+        max-width: 100%;
+        overflow: hidden;
+        font-size: small;
+        text-align: center;
+        text-overflow: ellipsis;
+    }
+}

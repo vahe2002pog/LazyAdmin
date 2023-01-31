@@ -20,7 +20,7 @@
         "x-small": "14px",
     };
     if (Object.keys(iconSizes).indexOf(size) === -1) {
-        size = normal;
+        size = "normal";
     }
     let slot = false;
     let classes = "";

@@ -1,3 +1,4 @@
+from email import message
 from msilib.schema import Directory
 from os import path
 from functools import wraps
@@ -23,6 +24,7 @@ import json
 DATA_DIR = './client/src/users'
 PUBLIC_DIR = '../client/public'
 ALLOWED_EXTENSIONS_IMAGE = {'png', 'jpg', 'jpeg'}
+ALLOWED_EXTENSIONS_VIDEO = {'mp4', 'webm'}
 
 user_cache = dict()
 user_cache_stack = []
@@ -90,6 +92,7 @@ def get_groups(token):
     groups = response.json().get("response").get("items")
     return groups
 
+
 def get_extension(file_name):
     # return file_name.split('.')[-1].lower()
     return file_name.rsplit('.', 1)[1].lower()
@@ -106,12 +109,18 @@ def clear_directory(path):
         if os.path.isfile(file):
             os.remove(file)
 
+
 def get_user_watermark(user_id):
     path = DATA_DIR + '/user' + user_id + '/watermark'
     for file_name in os.listdir(path):
         if allowed_file(file_name, ALLOWED_EXTENSIONS_IMAGE):
             return file_name
     return None
+
+
+def get_datetime_name():
+    return str(datetime.datetime.now()).replace('-', "").replace(" ", "_").replace(":", "").replace(".", "")
+
 
 @app.route('/login', methods=['GET'])
 @app.route('/', methods=['GET'])
@@ -178,13 +187,14 @@ def load_watermark(token):
     file_name = file.filename
     if file and allowed_file(file_name, ALLOWED_EXTENSIONS_IMAGE):
         file_name = "watermark." + get_extension(file_name)
-        path = DATA_DIR + '/user' + user_id + "/watermark"
+        path = DATA_DIR + '/user' + user_id + "/watermark/"
         os.makedirs(path, exist_ok=True)
         clear_directory(path)
         file.save(os.path.join(path, file_name))
         return answer_template(code=200)
     else:
         return answer_template(error="wrong file extension", code=415)
+
 
 @app.route("/user/watermark", methods=["GET"])
 @use_guard
@@ -196,3 +206,41 @@ def get_watermark(token):
         return send_from_directory(directory, watermark)
     else:
         return answer_template(error="image not found", code=404)
+
+
+@app.route("/user/video", methods=["POST"])
+@use_guard
+def load_video(token):
+    if 'file' not in request.files:
+        return answer_template(error="file not found", code=400)
+    video = request.files['file']
+    if video.filename == '':
+        return answer_template(error="file not found", code=400)
+    user_id = str(get_user(token)[0].get('id'))
+    video_name = video.filename
+    if video and allowed_file(video_name, ALLOWED_EXTENSIONS_VIDEO):
+        name = get_datetime_name()
+        file_name = name + "." + get_extension(video_name)
+        path = DATA_DIR + "/user" + user_id + "/videos"
+        os.makedirs(path, exist_ok=True)
+        file_path = os.path.join(path, file_name)
+        video.save(file_path)
+
+        my_video = Video(path, name, get_extension(video_name), video_name)
+
+        return answer_template(code=200, data=my_video.print())
+    else:
+        return answer_template(error="wrong file extension", code=415)
+
+
+@app.route("/user/video/preview/<preview_name>", methods=["GET"])
+@use_guard
+def get_video_preview(token, preview_name):
+    user_id = str(get_user(token)[0].get('id'))
+    directory = DATA_DIR + '/user' + user_id + '/videos/'
+    file_path = directory + preview_name
+    if os.path.exists(file_path):
+        return send_from_directory('.' + directory, preview_name)
+    else:
+        return answer_template(error="image not found", code=404)
+

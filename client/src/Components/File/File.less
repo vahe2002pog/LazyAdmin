@@ -4,8 +4,18 @@
 @import "../../../public/less/mixins";
 
 [class*="file-"] {
+    position: relative;
+
     & input[type="file"] {
         display: none;
+    }
+
+    & .text{
+        width: 100%;
+        text-align: center;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 
     .unselectable;
@@ -25,11 +35,22 @@
             transform: scale(0);
         }
 
+        & .dropZone{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
 
         &.drop .field {
             & * {
+                pointer-events: none;
                 transform: scale(0);
                 opacity: 0;
+            }
+
+            & * {
+                pointer-events: none;
             }
             
             & .icon {
@@ -42,6 +63,7 @@
             .neumorphism-background;
             .neumorphism-shadow-inset;
             .neumorphism-border;
+            position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -52,8 +74,18 @@
             & .field-title {
                 display: flex;
                 align-items: center;
+                justify-content: center;
+                flex-direction: column;
                 margin: 5px;
                 font-size: small;
+            }
+
+            & .slot{
+                // pointer-events: none;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                // z-index: -1;
             }
         }
     }
@@ -73,15 +105,6 @@
                 width: 100%;
                 margin: auto 5px;
                 overflow: hidden;
-                
-                & .text{
-                    width: 100%;
-                    text-align: center;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                    font-size: small;
-                }
             }
         }
     }

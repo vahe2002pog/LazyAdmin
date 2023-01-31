@@ -1,6 +1,5 @@
 import taglib
 import datetime 
-import string
 from cv2 import cv2
 import os
 
@@ -44,13 +43,13 @@ class Video:
         path = self.directory + "/" + self.preview
         if not os.path.isfile(path):
             video = cv2.VideoCapture(self.path)
-            a, frame = video.read()
-            k = frame.shape[0] / frame.shape[1]
+            ret, frame = video.read()
+            ratio = frame.shape[0] / frame.shape[1]
             width = 150
-            height = int(width * k)
-            dim = (width, height)
+            height = int(width * ratio)
+            dimensions = (width, height)
 
-            frame = cv2.resize(frame, dim)
+            frame = cv2.resize(frame, dimensions)
             cv2.imwrite(path, frame)
 
     def print(self):

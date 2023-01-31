@@ -96,7 +96,7 @@
                         class="item pointer"
                         on:click={() => optionClick(item)}>
                         <img src={item.imageURL} alt="" />
-                        <div>{item.name}</div>
+                        <div class="item-text">{item.name}</div>
                     </div>
                 {/each}
             </div>
